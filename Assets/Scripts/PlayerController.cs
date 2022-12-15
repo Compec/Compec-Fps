@@ -13,6 +13,12 @@ public class PlayerController : MonoBehaviour
 
     public bool isMoving;
 
+    public float totalRotationY;
+    public float totalRotationX;
+    public float sensitivity;
+
+    public Transform CameraJoint;
+    
     // Update is called once per frame
     void Update()
     {
@@ -31,7 +37,7 @@ public class PlayerController : MonoBehaviour
         if (Input.GetKey(KeyCode.A))
         {
             
-            charTransform.position += Vector3.left * (speed * Time.deltaTime);
+            charTransform.position += charTransform.right * (-1 * (speed * Time.deltaTime));
             
             isMoving = true;
             if(speed < maxSpeed)
@@ -40,7 +46,7 @@ public class PlayerController : MonoBehaviour
         
         if (Input.GetKey(KeyCode.D))
         {
-            charTransform.position += Vector3.right * (speed * Time.deltaTime);
+            charTransform.position += charTransform.right * (speed * Time.deltaTime);
             
             isMoving = true;
             if(speed < maxSpeed)
@@ -49,7 +55,7 @@ public class PlayerController : MonoBehaviour
         
         if (Input.GetKey(KeyCode.W))
         {
-            charTransform.position += Vector3.forward * (speed * Time.deltaTime);
+            charTransform.position += charTransform.forward * (speed * Time.deltaTime);
             
             isMoving = true;
             if(speed < maxSpeed)
@@ -58,11 +64,26 @@ public class PlayerController : MonoBehaviour
         
         if (Input.GetKey(KeyCode.S))
         {
-            charTransform.position += Vector3.back * (speed * Time.deltaTime);
+            charTransform.position += charTransform.forward * (-1 * speed * Time.deltaTime);
             
             isMoving = true;
             if(speed < maxSpeed)
                 speed += Time.deltaTime * acceleration;
         }
+
+
+        
+        float deltaRotationY = Input.GetAxis("Mouse X");
+        totalRotationY += deltaRotationY * sensitivity * Time.deltaTime;
+
+        float deltaRotationX = Input.GetAxis("Mouse Y");
+        totalRotationX += deltaRotationX * sensitivity * Time.deltaTime;
+
+        totalRotationX = Mathf.Clamp(totalRotationX, -50, 30);
+        
+        charTransform.rotation = Quaternion.Euler(0, totalRotationY,0);
+        CameraJoint.localRotation = Quaternion.Euler(totalRotationX, 0, 0);
+        
+        
     }
 }
